@@ -6,7 +6,6 @@ from adminapi.filters import (
     All,
     Any,
     BaseFilter,
-    Comparison,
     Contains,
     ContainedBy,
     ContainedOnlyBy,
@@ -81,11 +80,7 @@ class QueryBuilder(object):
             else:
                 template = '{{0}}::text ~ E{0}'.format(value)
 
-        elif isinstance(filt, (
-            Comparison,
-            GreaterThanOrEquals,
-            LessThanOrEquals,
-        )):
+        elif isinstance(filt, (GreaterThanOrEquals, LessThanOrEquals)):
             template = self._basic_comparison_filter_template(attribute, filt)
 
         elif isinstance(filt, Overlaps):
@@ -127,14 +122,12 @@ class QueryBuilder(object):
                 'Cannot compare hostname attribute "{}"'.format(attribute)
             )
 
-        if isinstance(filt, Comparison):
-            operator = filt.comparator
-        elif isinstance(filt, GreaterThan):
+        if isinstance(filt, GreaterThan):
             operator = '>'
-        elif isinstance(filt, GreaterThanOrEquals):
-            operator = '>='
         elif isinstance(filt, LessThan):
             operator = '<'
+        elif isinstance(filt, GreaterThanOrEquals):
+            operator = '>='
         else:
             operator = '<='
 

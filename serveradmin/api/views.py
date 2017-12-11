@@ -9,7 +9,7 @@ from django.core.exceptions import PermissionDenied, ValidationError
 from django.contrib.auth.decorators import login_required
 from django.contrib.admindocs.utils import trim_docstring, parse_docstring
 
-from adminapi.filters import FilterValueError, filter_from_obj
+from adminapi.filters import BaseFilter, FilterValueError
 from adminapi.request import json_encode_extra
 from serveradmin.api import ApiError, AVAILABLE_API_FUNCTIONS
 from serveradmin.api.decorators import api_view
@@ -79,7 +79,7 @@ def dataset_query(request, app, data):
             raise ValidationError('Filters must be a dictionary')
         filters = {}
         for attr, filter_obj in data['filters'].items():
-            filters[attr] = filter_from_obj(filter_obj)
+            filters[attr] = BaseFilter.deserialize(filter_obj)
 
         query = Query(filters=filters)
         if data['restrict']:
